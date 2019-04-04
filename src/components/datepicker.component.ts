@@ -6,92 +6,92 @@ import { DateService } from '../services/datepicker.service';
 
 @Component({
     template: `
-    <div class="datepicker-wrapper">
-    <div class="datepicker-header"
-        [ngClass]="config.headerClasses">
-        <div class="weekday-header">
-            <div class="weekday-title">{{getSelectedWeekday()}}</div>
+    <div class=\"datepicker-wrapper\">
+    <div class=\"datepicker-header\"
+        [ngClass]=\"config.headerClasses\">
+        <div class=\"weekday-header\">
+            <div class=\"weekday-title\"></div>
         </div>
-        <div class="date-header">
-            <div class="row">
-                <div (tap)="setView(views.Month, getTempMonth(), months.length, yearScroll)" class="col datepicker-month">
+        <div class=\"date-header\">
+            <div class=\"row\">
+                <div (tap)=\"setView(views.Month, getTempMonth(), months.length, yearScroll)\" class=\"col datepicker-month\">
                     {{monthShort(getTempMonth())}}
                 </div>
             </div>
-            <div class="row">
-                <div (tap)="setView(views.Day, getTempDate(),getDayList().length, dayScroll)" class="col datepicker-day-of-month ">
-                    {{getTempDate()}}
+            <div class=\"row\">
+                <div (tap)=\"setView(views.Day, getTempDate(),getDayList().length, dayScroll)\" class=\"col datepicker-day-of-month \">
+                    {{getTempDate()}}    {{getSelectedWeekday()}}
                 </div>
             </div>
-            <div class="row">
-                <div  (tap)="setView(views.Year, getTempYear() - 1901, years.length, yearScroll)" class="col datepicker-year ">
-                    {{ getTempYear()}}
+            <div class=\"row\">
+                <div  (tap)=\"setView(views.Year, getTempYear() - 1901, years.length, yearScroll)\" class=\"col datepicker-year \">
+                    {{ getTempYear()}}年
                 </div>
             </div>
         </div>
     </div>
-    <div class="datepicker-calendar" 
-    *ngIf="view === views.Calendar"
-        [ngClass]="config.bodyClasses">
-        <div class="row col datepicker-controls">
-            <button (tap)="prevMonth()" ion-button>
-                    <ion-icon name="arrow-back"></ion-icon>
+    <div class=\"datepicker-calendar\" 
+    *ngIf=\"view === views.Calendar\"
+        [ngClass]=\"config.bodyClasses\">
+        <div class=\"row col datepicker-controls\">
+            <button (tap)=\"prevMonth()\" ion-button>
+                    <ion-icon name=\"arrow-back\"></ion-icon>
                 </button>            
-                {{getTempMonth()}} {{getTempYear()}}
-            <button (tap)="nextMonth()"ion-button>
-                    <ion-icon name="arrow-forward"></ion-icon>
+                {{getTempYear()}}年 {{getTempMonth()}}
+            <button (tap)=\"nextMonth()\"ion-button>
+                    <ion-icon name=\"arrow-forward\"></ion-icon>
             </button>
         </div>
-        <div class="weekdays-row row">
-            <span class="col calendar-cell"
-                *ngFor="let dayOfWeek of weekdays">
+        <div class=\"weekdays-row row\">
+            <span class=\"col calendar-cell\"
+                *ngFor=\"let dayOfWeek of weekdays\">
                     {{dayOfWeekShort(dayOfWeek)}}
                 </span>
         </div>
-        <div class="calendar-wrapper">
-            <div class="row calendar-row" *ngFor="let week of rows;let i = index;">
-                <span class="col calendar-cell"
-                    *ngFor="let day of cols;let j=index;"
-                    [ngClass]="{
+        <div class=\"calendar-wrapper\">
+            <div class=\"row calendar-row\" *ngFor=\"let week of rows;let i = index;\">
+                <span class=\"col calendar-cell\"
+                    *ngFor=\"let day of cols;let j=index;\"
+                    [ngClass]=\"{
                   'datepicker-date-col': getDate(i, j) !== undefined,
                   'datepicker-selected': isSelectedDate(getDate(i, j)),
                   'datepicker-current' : isActualDate(getDate(i, j)),
                   'datepicker-disabled': isDisabled(getDate(i, j)),
                   'datepicker-temp': isTempDate(getDate(i, j)),
                   'datepicker-mark' : isMark(getDate(i, j))
-                  }"
-                    (tap)="selectDate(getDate(i, j))">
-					{{getDateAsDay(i, j)}}
-				</span>
+                  }\"
+                    (tap)=\"selectDate(getDate(i, j))\">
+\t\t\t\t\t{{getDateAsDay(i, j)}}
+\t\t\t\t</span>
             </div>
         </div>
     </div>
-    <div [hidden]="view !== views.Year" #yearScroll class="datepicker-rows">
-        <ng-container  *ngFor="let year of years">    
-            <div  *ngIf="testYear(year) && view === views.Year" (tap)="setSelectedYear(year)" [class.active]="getTempYear() === year" [class.selected]="getSelectedYear() === year" class="row">
-                {{year}}
+    <div [hidden]=\"view !== views.Year\" #yearScroll class=\"datepicker-rows\">
+        <ng-container  *ngFor=\"let year of years\">    
+            <div  *ngIf=\"testYear(year) && view === views.Year\" (tap)=\"setSelectedYear(year)\" [class.active]=\"getTempYear() === year\" [class.selected]=\"getSelectedYear() === year\" class=\"row\">
+                {{year}}年
             </div>
         </ng-container>
     </div>
-        <div [hidden]="view !== views.Month" #monthScroll class="datepicker-rows">
-        <ng-container *ngFor="let month of months;let i = index">
-            <div  *ngIf="testMonth(i)  && view === views.Month" (tap)="setSelectedMonth(i)" [class.active]="getTempMonth() === month" [class.selected]="getSelectedMonth() === month"   class="row">
+        <div [hidden]=\"view !== views.Month\" #monthScroll class=\"datepicker-rows\">
+        <ng-container *ngFor=\"let month of months;let i = index\">
+            <div  *ngIf=\"testMonth(i)  && view === views.Month\" (tap)=\"setSelectedMonth(i)\" [class.active]=\"getTempMonth() === month\" [class.selected]=\"getSelectedMonth() === month\"   class=\"row\">
                 {{month}}
             </div>
         </ng-container>
     </div>
-    <div [hidden]="view !== views.Day" #dayScroll class="datepicker-rows">
-       <ng-container *ngFor="let day of getDayList()">
-            <div class="row" *ngIf="testDay(day)  && view === views.Day" [class.active]="getTempDate() === day" [class.selected]="getSelectedDate() === day" (tap)="setSelectedDay(day)" >
-                {{day}}
+    <div [hidden]=\"view !== views.Day\" #dayScroll class=\"datepicker-rows\">
+       <ng-container *ngFor=\"let day of getDayList()\">
+            <div class=\"row\" *ngIf=\"testDay(day)  && view === views.Day\" [class.active]=\"getTempDate() === day\" [class.selected]=\"getSelectedDate() === day\" (tap)=\"setSelectedDay(day)\" >
+                {{day}}日
             </div>
         </ng-container>
     </div>
-    <div class="datepicker-footer">
-        <button (tap)="onCancel()"
+    <div class=\"datepicker-footer\">
+        <button (tap)=\"onCancel()\"
             ion-button>
             {{config.cancelText || 'Cancel'}}</button>
-        <button (tap)="onDone()"
+        <button (tap)=\"onDone()\"
             ion-button>
             {{config.okText || 'OK'}}</button>
     </div>
@@ -131,7 +131,7 @@ ionic2-datepicker .datepicker-wrapper {
 }
 ionic2-datepicker .datepicker-wrapper .datepicker-header {
   color: white;
-  background-color: #009688;
+  background-color: #acacac;
   display: flex;
   flex-flow: column;
   height: 35%;
@@ -142,21 +142,22 @@ ionic2-datepicker .datepicker-wrapper .datepicker-header .date-header {
   text-align: center;
 }
 ionic2-datepicker .datepicker-wrapper .datepicker-header .date-header .datepicker-day-of-month {
-  font-size: 60px;
+  font-size: 7.5vh;
   font-weight: 700;
 }
 ionic2-datepicker .datepicker-wrapper .datepicker-header .date-header .datepicker-year, ionic2-datepicker .datepicker-wrapper .datepicker-header .date-header .datepicker-month {
-  font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  font-size: 5.5vh;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 ionic2-datepicker .datepicker-wrapper .datepicker-header .weekday-header {
-  padding: 8px 10px;
-  background-color: #008d7f;
+  padding: 7px 10px;
+  background-color: #acacac;
 }
-ionic2-datepicker .datepicker-wrapper .datepicker-header .weekday-header .weekday-title {
+ionic2-datepicker .datepicker-wrapper .datepicker-header         .weekday-header .weekday-title {
   font-weight: bold;
   text-align: center;
+  font-size: 1.8em;
 }
 ionic2-datepicker .weekdays-row {
   text-align: center;
@@ -173,7 +174,8 @@ ionic2-datepicker .datepicker-rows {
     align-items:center;
 }
 ionic2-datepicker .datepicker-rows .row {
-    min-height: 30px;
+    min-height: 55px;
+    font-size: 1.5em;
     display: flex;
     align-items: center;
     align-content: center;
@@ -195,6 +197,7 @@ ionic2-datepicker .datepicker-rows .row.active {
 ionic2-datepicker .datepicker-calendar .datepicker-controls {
   align-items: center;
   justify-content: space-between;
+  font-size: 1.2em;
 }
 ionic2-datepicker .datepicker-calendar .calendar-wrapper {
   height: calc(100% - 60px - 40px);
